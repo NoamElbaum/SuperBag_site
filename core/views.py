@@ -6,21 +6,22 @@ from django.contrib import messages
 from django.core.paginator import Paginator
 
 from .models import Item, OrderItem, Order, CATEGORY_CHOISES
+from . import forms
 
 # Create your views here.
-class HomeView(ListView):
-    model = Item
-    paginate_by = 1
-    template_name = 'core/home.html'
+# class HomeView(ListView):
+#     model = Item
+#     paginate_by = 1
+#     template_name = 'core/home.html'
 
-    def get_paginate_by(self, queryset):
-        self.paginate_by = 1
-        return self.paginate_by
+#     def get_paginate_by(self, queryset):
+#         self.paginate_by = 1
+#         return self.paginate_by
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['cat_list'] = CATEGORY_CHOISES
-        return context
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         context['cat_list'] = CATEGORY_CHOISES
+#         return context
 
 # class CatHomeView(ListView):
 
@@ -34,8 +35,20 @@ class HomeView(ListView):
 #         context['object_list'] = Item.objects.filter(category=self.kwargs['cat'])
         # return context
 def CatHomeView(request, **kwargs):
+
     pag_by = 1
-    products = Item.objects.filter(category=kwargs['cat'])
+
+    if request.method == 'POST':
+        info = forms.PagForm(request.POST)
+        if info.is_valid:
+            print(info)
+            pag_by = info.cleaned_data['pag_by']
+
+    cat = kwargs['cat']
+    if cat != '0':
+        products = Item.objects.filter(category=kwargs['cat'])
+    else:
+        products = Item.objects.all()
     context = {'cat_list': CATEGORY_CHOISES, 'cat': kwargs['cat']}
     if len(products) > pag_by:
         context['is_paginated'] = True
@@ -45,6 +58,7 @@ def CatHomeView(request, **kwargs):
     page_number = request.GET.get('page') or 1
     context['page_obj'] =  paginator.get_page(page_number)
     context['object_list'] = paginator.get_page(page_number)
+    context['pag_form'] = forms.PagForm()
     return render(request, 'core/home.html', context)
 
 class OrderSummaryView(LoginRequiredMixin, View ):

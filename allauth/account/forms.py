@@ -1,5 +1,7 @@
 from __future__ import absolute_import
 
+from django.forms.widgets import Widget, CheckboxInput, boolean_check
+
 import warnings
 from importlib import import_module
 
@@ -88,8 +90,8 @@ class SetPasswordField(PasswordField):
 
 class LoginForm(forms.Form):
 
-    password = PasswordField(label=_("Password"))
-    remember = forms.BooleanField(label=_("Remember Me"),
+    password = PasswordField(label=_("סיסמא"))
+    remember = forms.BooleanField(label=_("זכור מחשב זה"),
                                   required=False)
 
     user = None
@@ -112,15 +114,15 @@ class LoginForm(forms.Form):
                                                   'placeholder':
                                                   _('E-mail address'),
                                                   'autofocus': 'autofocus'})
-            login_field = forms.EmailField(label=_("E-mail"),
+            login_field = forms.EmailField(label=_("דואר אלקטרוני"),
                                            widget=login_widget)
         elif app_settings.AUTHENTICATION_METHOD \
                 == AuthenticationMethod.USERNAME:
             login_widget = forms.TextInput(attrs={'placeholder':
-                                                  _('Username'),
+                                                  _('שם משתמש'),
                                                   'autofocus': 'autofocus'})
             login_field = forms.CharField(
-                label=_("Username"),
+                label=_("שם משתמש"),
                 widget=login_widget,
                 max_length=get_username_max_length())
         else:
@@ -257,15 +259,15 @@ def _base_signup_form_class():
 
 
 class BaseSignupForm(_base_signup_form_class()):
-    username = forms.CharField(label=_("Username"),
+    username = forms.CharField(label=_("שם משתמש"),
                                min_length=app_settings.USERNAME_MIN_LENGTH,
                                widget=forms.TextInput(
                                    attrs={'placeholder':
-                                          _('Username'),
+                                          _('שם משתמש'),
                                           'autofocus': 'autofocus'}))
     email = forms.EmailField(widget=forms.TextInput(
         attrs={'type': 'email',
-               'placeholder': _('E-mail address')}))
+               'placeholder': _('mail@provider.com')}))
 
     def __init__(self, *args, **kwargs):
         email_required = kwargs.pop('email_required',
@@ -289,7 +291,7 @@ class BaseSignupForm(_base_signup_form_class()):
         ]
         if app_settings.SIGNUP_EMAIL_ENTER_TWICE:
             self.fields["email2"] = forms.EmailField(
-                label=_("E-mail (again)"),
+                label=_("דואר אלקטרוני לאימות"),
                 widget=forms.TextInput(
                     attrs={
                         'type': 'email',
@@ -298,10 +300,10 @@ class BaseSignupForm(_base_signup_form_class()):
                 )
             )
         if email_required:
-            self.fields['email'].label = gettext("E-mail")
+            self.fields['email'].label = gettext("דואר אלקטרוני")
             self.fields['email'].required = True
         else:
-            self.fields['email'].label = gettext("E-mail (optional)")
+            self.fields['email'].label = gettext("דואר אלקטרוני (אופציונלי)")
             self.fields['email'].required = False
             self.fields['email'].widget.is_required = False
             if self.username_required:
@@ -487,12 +489,12 @@ class SetPasswordForm(PasswordVerificationMixin, UserForm):
 class ResetPasswordForm(forms.Form):
 
     email = forms.EmailField(
-        label=_("E-mail"),
+        label=_("דואר אלקטרוני"),
         required=True,
         widget=forms.TextInput(attrs={
             "type": "email",
             "size": "30",
-            "placeholder": _("E-mail address"),
+            "placeholder": _("mail@provider.com"),
         })
     )
 

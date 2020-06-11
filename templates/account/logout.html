@@ -11,16 +11,16 @@
         <div class="row wow fadeIn">
           <div class="col-6 offset-3">
 
-            <h1>{% trans "Sign Out" %}</h1>
+            <h1>יציאה</h1>
 
-            <p>{% trans 'Are you sure you want to sign out?' %}</p>
+            <p>{% trans '?האם אתה בטוח כי ברצונך לצאת' %}</p>
 
             <form method="post" action="{% url 'account_logout' %}">
               {% csrf_token %}
               {% if redirect_field_value %}
               <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
               {% endif %}
-              <button class='btn btn-secondery' type="submit">{% trans 'Sign Out' %}</button>
+              <button class='btn btn-danger' type="submit">יציאה</button>
             </form>
 
         </div>

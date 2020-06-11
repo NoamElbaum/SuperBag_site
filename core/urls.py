@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import (
-    HomeView,
+    # HomeView,
     CatHomeView,
     OrderSummaryView,
     # CheckoutView,
@@ -14,7 +14,7 @@ from .views import (
 app_name = 'core'
 
 urlpatterns = [
-    path('', CatHomeView,name='cat-home'),
+    path('', CatHomeView,name='cat-home' ,kwargs={'cat':'0'}),
     path('<cat>/', CatHomeView,name='cat-home'),
     # path('checkout/',CheckoutView.as_view(), name='checkout'),
     path('order-summary/', OrderSummaryView.as_view(),name='order-summary'),
